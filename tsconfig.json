@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true
-  }
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "target": "es5"
+  },
+  "include": ["lib"],
+  "exclude": ["node_modules", "acceptance", "*.spec.ts"]
 }

@@ -5,3 +5,5 @@ node_modules
 # This wont work if we ever want to run this Terraforming in CI on Github
 terraform.tfstate
 terraform.tfstate.*
+
+dist

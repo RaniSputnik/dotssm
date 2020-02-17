@@ -1,17 +1,25 @@
 {
   "name": "dotssm",
   "version": "1.0.0",
-  "description": "Dot-env for SSM",
-  "main": "lib/index.ts",
+  "description": "dotenv for SSM",
+  "main": "dist/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "directories": {
     "lib": "lib"
   },
   "scripts": {
     "test": "npm run test:unit",
     "test:unit": "jest --testPathPattern lib/*",
-    "test:acceptance": "jest --testPathPattern acceptance/*"
+    "test:acceptance": "jest --testPathPattern acceptance/*",
+    "prepare": "tsc",
+    "prepublishOnly": "npm test",
+    "postversion": "git push && git push --tags"
   },
-  "author": "",
+  "keywords": ["SSM", "parameter store", "AWS", "configuration", "offline"],
+  "author": "Ryan Loader <talk@ryanloader.me>",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^25.1.2",
