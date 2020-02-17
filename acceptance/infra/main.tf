@@ -23,4 +23,10 @@ resource "aws_ssm_parameter" "foo_secret" {
   value = "somethingsecret"
 }
 
+resource "aws_ssm_parameter" "foo_nested" {
+  name  = "/foo/nested/value"
+  type  = "String"
+  value = "this config is nested"
+}
+
 # TODO: Support string list?
