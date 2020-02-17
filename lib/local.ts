@@ -1,5 +1,5 @@
 import fs from "fs";
-import { GetConfigFunc } from "./types";
+import { GetConfigFunc, MaybeConfig } from "./types";
 
 const LOCAL_FILE_NAME = ".ssm.json";
 
@@ -11,9 +11,19 @@ export const getConfig: GetConfigFunc = async namespace => {
         return resolve(undefined);
       }
       const contents = JSON.parse(data.toString("utf-8"));
-      const config = contents[namespace];
+      const config = findConfig(contents, namespace);
       resolve(config);
     });
     return true;
   });
+};
+
+const findConfig = (obj: any, namespace: string): MaybeConfig => {
+  const parts = namespace.split("/").filter(v => v.length > 0);
+  let maybeConfig = obj;
+  parts.every(part => {
+    maybeConfig = maybeConfig[part];
+    return maybeConfig;
+  });
+  return maybeConfig;
 };
