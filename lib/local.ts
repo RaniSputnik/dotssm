@@ -3,7 +3,7 @@ import { GetConfigFunc, MaybeConfig } from "./types";
 
 const LOCAL_FILE_NAME = ".ssm.json";
 
-export const getConfig: GetConfigFunc = async namespace => {
+export const local: GetConfigFunc = async namespace => {
   return new Promise(resolve => {
     fs.readFile(LOCAL_FILE_NAME, (err, data) => {
       if (err) {

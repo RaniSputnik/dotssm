@@ -1,15 +1,16 @@
 import AWS from "aws-sdk";
 import { GetConfigFunc } from "./types";
 
-export const getConfig: GetConfigFunc = async namespace => {
-  const ssm = new AWS.SSM();
+export const ssm = (
+  client: AWS.SSM = new AWS.SSM()
+): GetConfigFunc => async namespace => {
   const params: AWS.SSM.GetParametersByPathRequest = {
     Path: namespace,
     Recursive: true,
     WithDecryption: true
     // TODO: Handle pagination
   };
-  const res = await ssm.getParametersByPath(params).promise();
+  const res = await client.getParametersByPath(params).promise();
   const result = {};
 
   // TODO: How do we handle two keys that conflict with one another?

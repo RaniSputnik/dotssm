@@ -1,5 +1,5 @@
 import path from "path";
-import { getConfig } from "./local";
+import { local as getConfig } from "./local";
 
 const libDir = __dirname;
 const fixturesDir = path.join(__dirname, "../", "tests");
