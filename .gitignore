@@ -4,3 +4,4 @@ node_modules
 # TODO: Work out a more permanent solution for this
 # This wont work if we ever want to run this Terraforming in CI on Github
 terraform.tfstate
+terraform.tfstate.*
