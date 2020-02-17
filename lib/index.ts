@@ -1,10 +1,9 @@
 import { GetConfigFunc, Config } from "./types";
+import { fallback } from "./fallback";
+import { getConfig as getConfigLocal } from "./local";
+import { getConfig as getConfigSSM } from "./ssm";
 
-export const getConfig: GetConfigFunc = async (
-  namespace: string
-): Promise<Config> => {
-  throw new Error("Not implemented");
-};
+export const getConfig: GetConfigFunc = fallback(getConfigLocal, getConfigSSM);
 
 export const validateSchema = (
   _schema: unknown,

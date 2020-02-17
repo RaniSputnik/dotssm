@@ -1,9 +1,9 @@
 import fs from "fs";
-import { MaybeConfig } from "./types";
+import { GetConfigFunc } from "./types";
 
 const LOCAL_FILE_NAME = ".ssm.json";
 
-export const getConfig = async (namespace: string): Promise<MaybeConfig> => {
+export const getConfig: GetConfigFunc = async namespace => {
   return new Promise(resolve => {
     fs.readFile(LOCAL_FILE_NAME, (err, data) => {
       if (err) {

@@ -1,4 +1,4 @@
-import { MaybeConfig, GetConfigFunc } from "./types";
+import { GetConfigFunc } from "./types";
 
 export const fallback = (
   firstFunc: GetConfigFunc,
@@ -6,14 +6,13 @@ export const fallback = (
 ): GetConfigFunc => {
   const funcs = [firstFunc, ...fallbackFuncs];
 
-  return async (namespace: string): Promise<MaybeConfig> => {
-    for (var i = 0; i < funcs.length; i++) {
+  return async namespace => {
+    for (let i = 0; i < funcs.length; i++) {
       const func = funcs[i];
       const result = await func(namespace);
-      if (!result) {
-        continue;
+      if (result) {
+        return result;
       }
-      return result;
     }
   };
 };

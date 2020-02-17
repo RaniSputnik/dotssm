@@ -51,3 +51,20 @@ in one instance and async in another. It's all a bit of a mess.
 When developing locally, it's a pain to be logged in to an environment.
 You should be able to develop your applications entirely offline.
 A local config file allows you to do this.
+
+## Contributing
+
+Getting set up:
+
+```sh
+npm i     # Install dependencies
+npm test  # Run tests
+```
+
+Running the acceptance tests (requires [Terraform](https://www.terraform.io/) installed).
+
+```
+terraform init acceptance/infra
+terraform apply acceptance/infra
+npm run test:acceptance
+```
