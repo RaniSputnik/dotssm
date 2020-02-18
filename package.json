@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "dotenv for SSM",
   "main": "dist/index.js",
-  "types": "lib/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/**/*"
   ],
