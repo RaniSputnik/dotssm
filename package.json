@@ -18,7 +18,13 @@
     "prepublishOnly": "npm test",
     "postversion": "git push && git push --tags"
   },
-  "keywords": ["SSM", "parameter store", "AWS", "configuration", "offline"],
+  "keywords": [
+    "SSM",
+    "parameter store",
+    "AWS",
+    "configuration",
+    "offline"
+  ],
   "author": "Ryan Loader <talk@ryanloader.me>",
   "license": "MIT",
   "devDependencies": {
