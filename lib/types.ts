@@ -1,4 +1,4 @@
-export type Config = { [key: string]: string }; // TODO: Support string list type?
+export type Config = { [key: string]: string | Config }; // TODO: Support string list type?
 
 export type MaybeConfig = Config | undefined;
 
