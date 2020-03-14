@@ -8,9 +8,10 @@ const customFixturesDir = path.join(fixturesDir, "custom");
 const multipleFixturesDir = path.join(fixturesDir, "multiple-keys");
 const nestedFixturesDir = path.join(fixturesDir, "nested");
 
-const validNamespace = "/foo/bar/";
-const invalidNamespace = "/invalid/namespace/";
-const anyNamespace = "/some/namespace/";
+const validNamespace = "/foo/bar";
+const unknownNamespace = "/invalid/namespace/";
+const invalidNamespace = "/foo/bar/";
+const anyNamespace = "/some/namespace";
 
 describe("Given there is a .ssm file in the current working directory", () => {
   describe("When getConfig is called with the correct namespace", () => {
@@ -18,8 +19,16 @@ describe("Given there is a .ssm file in the current working directory", () => {
       process.chdir(nestedFixturesDir);
       const result = await getConfig(validNamespace);
       expect(result).toEqual({
-        greeting: "Hello, world"
+        "/greeting": "Hello, world"
       });
+    });
+  });
+
+  describe("When getConfig is called with an unknown namespace", () => {
+    it("Then it returns an empty object", async () => {
+      process.chdir(nestedFixturesDir);
+      const result = await getConfig(unknownNamespace);
+      expect(result).toEqual({});
     });
   });
 
@@ -27,7 +36,7 @@ describe("Given there is a .ssm file in the current working directory", () => {
     it("Then it returns an empty object", async () => {
       process.chdir(nestedFixturesDir);
       const result = await getConfig(invalidNamespace);
-      expect(result).toEqual(undefined);
+      expect(result).toEqual({});
     });
   });
 
@@ -35,10 +44,10 @@ describe("Given there is a .ssm file in the current working directory", () => {
     describe("When getConfig is called with the correct namespace", () => {
       it("Then it returns all the matching keys", async () => {
         process.chdir(multipleFixturesDir);
-        const result = await getConfig("/foo/");
+        const result = await getConfig("/foo");
         expect(result).toEqual({
-          bar: "baz",
-          secret: "localsecret"
+          "/bar": "baz",
+          "/secret": "localsecret"
         });
       });
     });
@@ -48,11 +57,9 @@ describe("Given there is a .ssm file in the current working directory", () => {
     describe("When getConfig is called with the correct namespace", () => {
       it("Then it returns nested config as an object", async () => {
         process.chdir(nestedFixturesDir);
-        const result = await getConfig("/foo/");
+        const result = await getConfig("/foo");
         expect(result).toEqual({
-          bar: {
-            greeting: "Hello, world"
-          }
+          "/bar/greeting": "Hello, world"
         });
       });
     });
@@ -74,9 +81,9 @@ describe("Given there is a config.json file present", () => {
     const getConfig = local("config.json");
     it("Then it returns the config object", async () => {
       process.chdir(customFixturesDir);
-      const result = await getConfig("/foo/");
+      const result = await getConfig("/foo");
       expect(result).toEqual({
-        bar: "baz"
+        "/bar": "baz"
       });
     });
   });
