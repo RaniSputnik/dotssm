@@ -25,7 +25,7 @@ Use the following code in your app to retrieve the config:
 ```js
 const namespace = "/mydomain/myapp";
 const config = await getConfig(namespace);
-setAppName(config.name) // Do whatever you need to do with config.name here
+setAppName(config["/name"]);
 ```
 
 TODO: Example of what IAM permissions the function needs in order to run.
