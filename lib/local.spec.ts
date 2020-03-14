@@ -1,10 +1,12 @@
 import path from "path";
-import { local as getConfig } from "./local";
+import { local } from "./local";
 
+const getConfig = local();
 const libDir = __dirname;
 const fixturesDir = path.join(__dirname, "../", "tests");
-const nestedFixturesDir = path.join(fixturesDir, "nested");
+const customFixturesDir = path.join(fixturesDir, "custom");
 const multipleFixturesDir = path.join(fixturesDir, "multiple-keys");
+const nestedFixturesDir = path.join(fixturesDir, "nested");
 
 const validNamespace = "/foo/bar/";
 const invalidNamespace = "/invalid/namespace/";
@@ -63,6 +65,19 @@ describe("Given there is not an .ssm file present", () => {
       process.chdir(libDir);
       const result = await getConfig(anyNamespace);
       expect(result).toEqual({});
+    });
+  });
+});
+
+describe("Given there is a config.json file present", () => {
+  describe("When getConfig is called with config.json as the file name", () => {
+    const getConfig = local("config.json");
+    it("Then it returns the config object", async () => {
+      process.chdir(customFixturesDir);
+      const result = await getConfig("/foo/");
+      expect(result).toEqual({
+        bar: "baz"
+      });
     });
   });
 });

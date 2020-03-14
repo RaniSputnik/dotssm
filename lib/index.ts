@@ -11,7 +11,7 @@ import { ssm } from "./ssm";
  * @param namespace The SSM namespace to search for the application config
  * @return a promise that resolves to an object containing the configuration
  */
-export const getConfig: GetConfigFunc = fallback(local, ssm());
+export const getConfig: GetConfigFunc = fallback(local(), ssm());
 
 /**
  * Factory method used to create a config retrieving function using the provided
@@ -21,7 +21,7 @@ export const getConfig: GetConfigFunc = fallback(local, ssm());
  * @return a function that can be called with a namespace value to retrieve config.
  */
 export const withAWSClient = (client: AWS.SSM): GetConfigFunc =>
-  fallback(local, ssm(client));
+  fallback(local(), ssm(client));
 
 // TODO: We'll probably want schema validation at some point
 // but do we want to bundle it in this library? Or somewhere else?

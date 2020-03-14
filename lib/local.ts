@@ -1,21 +1,20 @@
 import fs from "fs";
 import { GetConfigFunc, Config, NO_CONFIG } from "./types";
 
-const LOCAL_FILE_NAME = ".ssm.json";
-
-export const local: GetConfigFunc = async namespace => {
-  return new Promise(resolve => {
-    fs.readFile(LOCAL_FILE_NAME, (err, data) => {
-      if (err) {
-        // TODO: Is there any errors here that we should not ignore?
-        return resolve(NO_CONFIG);
-      }
-      const contents = JSON.parse(data.toString("utf-8"));
-      const config = findConfig(contents, namespace);
-      resolve(config);
+export const local = (localFileName: string = ".ssm.json"): GetConfigFunc => {
+  return async namespace => {
+    return new Promise(resolve => {
+      fs.readFile(localFileName, (err, data) => {
+        if (err) {
+          // TODO: Is there any errors here that we should not ignore?
+          return resolve(NO_CONFIG);
+        }
+        const contents = JSON.parse(data.toString("utf-8"));
+        const config = findConfig(contents, namespace);
+        return resolve(config);
+      });
     });
-    return true;
-  });
+  };
 };
 
 // TODO: Remove the any here
