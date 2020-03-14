@@ -17,12 +17,15 @@ export const ssm = (
   // eg. /foo/bar/config and /foo/bar
   // That can't be represented in the format that config is currently returned in
   // It probably should result in an error.
-  res.Parameters.forEach(p => {
+  res.Parameters?.forEach(p => {
+    if (!p.Name || !p.Value) {
+      return;
+    }
     const name = p.Name.substr(namespace.length);
     const parts = name.split("/").filter(v => v.length > 0);
     set(result, parts, p.Value);
-    console;
   });
+
   return result;
 };
 
@@ -37,6 +40,9 @@ const set = (target: any, path: string[], value: string) => {
   }
 
   const inner = {};
-  target[path.shift()] = inner;
-  set(inner, path, value);
+  const key = path.shift();
+  if (key) {
+    target[key] = inner;
+    set(inner, path, value);
+  }
 };

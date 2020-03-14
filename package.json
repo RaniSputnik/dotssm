@@ -11,9 +11,10 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "npm run test:unit",
+    "test": "npm run type-check && npm run test:unit",
     "test:unit": "jest --testPathPattern lib/*",
     "test:acceptance": "jest --testPathPattern acceptance/*",
+    "type-check": "tsc --noEmit",
     "prepare": "tsc",
     "prepublishOnly": "npm test",
     "postversion": "git push && git push --tags"
