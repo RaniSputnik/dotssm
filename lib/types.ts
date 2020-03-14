@@ -1,5 +1,5 @@
-export const NO_CONFIG = {};
+export type Config = Record<string, string | undefined>; // TODO: Support string list type?
 
-export type Config = { [key: string]: string | Config }; // TODO: Support string list type?
+export const NO_CONFIG: Config = {};
 
 export type GetConfigFunc = (namespace: string) => Promise<Config>;
