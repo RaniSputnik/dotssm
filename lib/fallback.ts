@@ -1,4 +1,4 @@
-import { GetConfigFunc } from "./types";
+import { GetConfigFunc, NO_CONFIG } from "./types";
 
 export const fallback = (
   firstFunc: GetConfigFunc,
@@ -10,9 +10,10 @@ export const fallback = (
     for (let i = 0; i < funcs.length; i++) {
       const func = funcs[i];
       const result = await func(namespace);
-      if (result) {
+      if (result && Object.keys(result).length > 0) {
         return result;
       }
     }
+    return NO_CONFIG;
   };
 };

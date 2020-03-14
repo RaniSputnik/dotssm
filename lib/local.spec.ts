@@ -62,7 +62,7 @@ describe("Given there is not an .ssm file present", () => {
     it("Then it returns an empty object", async () => {
       process.chdir(libDir);
       const result = await getConfig(anyNamespace);
-      expect(result).toEqual(undefined);
+      expect(result).toEqual({});
     });
   });
 });

@@ -1,4 +1,4 @@
-import { GetConfigFunc, Config } from "./types";
+import { GetConfigFunc } from "./types";
 import { fallback } from "./fallback";
 import { local } from "./local";
 import { ssm } from "./ssm";
