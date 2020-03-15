@@ -12,11 +12,7 @@ Add a `.ssm.json` file to your local repo with the following contents:
 
 ```json
 {
-  "mydomain": {
-    "myapp": {
-      "name": "Some Cool App (Dev)"
-    }
-  }
+  "/mydomain/myapp/name": "Some Cool App (Dev)"
 }
 ```
 
@@ -25,9 +21,9 @@ Use the following code in your app to retrieve the config:
 ```js
 import { getConfig } from "dotssm";
 
-const namespace = "/mydomain/myapp";
+const namespace = "/mydomain/myapp/";
 const config = await getConfig(namespace);
-const appName = config["/name"];
+const appName = config.name;
 ```
 
 Exclude the `.ssm.json` file from your deployment pacakge and the config
@@ -41,7 +37,7 @@ import AWS from "aws-sdk";
 
 const client = AWS.SSM({ apiVersion: "2014-11-06" });
 const getConfig = withAWSClient(client);
-const config = await getConfig("/mydomain/myapp");
+const config = await getConfig("/mydomain/myapp/");
 
 // TODO: Do something with config
 ```
