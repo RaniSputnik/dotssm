@@ -23,6 +23,8 @@ Add a `.ssm.json` file to your local repo with the following contents:
 Use the following code in your app to retrieve the config:
 
 ```js
+import { getConfig } from "dotssm";
+
 const namespace = "/mydomain/myapp";
 const config = await getConfig(namespace);
 setAppName(config["/name"]);
@@ -31,6 +33,7 @@ setAppName(config["/name"]);
 Need to customise the AWS client?
 
 ```js
+import { withAWSClient } from "dotssm";
 import AWS from "aws-sdk";
 
 const namespace = "/mydomain/myapp";
@@ -39,7 +42,7 @@ const getConfig = withAWSClient(client);
 const config = await getConfig(namespace);
 ```
 
-The client making the above requests requires the following IAM policy:
+The client making the above request requires the following IAM policy:
 
 ```json
 {
@@ -82,17 +85,4 @@ A local config file allows you to do this.
 
 ## Contributing
 
-Getting set up:
-
-```sh
-npm i     # Install dependencies
-npm test  # Run tests
-```
-
-Running the acceptance tests (requires [Terraform](https://www.terraform.io/) installed).
-
-```
-terraform init acceptance/infra
-terraform apply acceptance/infra
-npm run test:acceptance
-```
+Please read the [contribution guidelines](CONTRIBUTING.md).
