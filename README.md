@@ -28,8 +28,6 @@ const config = await getConfig(namespace);
 setAppName(config["/name"]);
 ```
 
-TODO: Example of what IAM permissions the function needs in order to run.
-
 Need to customise the AWS client?
 
 ```js
@@ -39,6 +37,21 @@ const namespace = "/mydomain/myapp";
 const client = AWS.SSM({ apiVersion: "2014-11-06" });
 const getConfig = withAWSClient(client);
 const config = await getConfig(namespace);
+```
+
+The client making the above requests requires the following IAM policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:ssm:GetParametersByPath"],
+      "Resource": "arn:aws:ssm:region:account-id:parameter/mydomain/myapp/*"
+    }
+  ]
+}
 ```
 
 ## Motivation (Notes)
