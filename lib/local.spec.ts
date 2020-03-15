@@ -64,6 +64,14 @@ describe("Given there is a .ssm file in the current working directory", () => {
       });
     });
   });
+
+  describe("When getConfig is called with an empty namespace", () => {
+    it("Then throws an error", async () => {
+      process.chdir(simpleFixturesDir);
+      const result = getConfig("");
+      await expect(result).rejects.toEqual(expect.any(Error));
+    });
+  });
 });
 
 describe("Given there is not an .ssm file present", () => {
