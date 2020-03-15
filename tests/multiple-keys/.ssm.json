@@ -1,6 +1,4 @@
 {
-  "foo": {
-    "bar": "baz",
-    "secret": "localsecret"
-  }
+  "/foo/bar": "baz",
+  "/foo/secret": "localsecret"
 }

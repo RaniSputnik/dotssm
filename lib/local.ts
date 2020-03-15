@@ -10,40 +10,25 @@ export const local = (localFileName: string = ".ssm.json"): GetConfigFunc => {
           return resolve(NO_CONFIG);
         }
         const contents = JSON.parse(data.toString("utf-8"));
-        const config = findConfig(contents, namespace);
+        const config = createConfig(contents, namespace);
         return resolve(config);
       });
     });
   };
 };
 
-// TODO: Remove the any here
-const findConfig = (obj: any, namespace: string): Config => {
-  const parts = namespace.split("/");
-  // Remove the first value - if the caller has done this correctly
-  // they will have started their namespace with a leading slash.
-  // We need to ignore that value.
-  // We could be more tolerant here but what's the point if it's
-  // not going to work against the real SSM anyway?
-  // TODO: Better error message here if namespace is incorrect
-  parts.shift();
-  let maybeConfig = obj;
-  parts.every(part => {
-    maybeConfig = maybeConfig[part];
-    return !!maybeConfig;
-  });
-  return flatten(maybeConfig || {});
-};
-
-const flatten = (obj: object, prefix = "/", aggregate: any = {}): Config => {
+const createConfig = (obj: object, namespace: string): Config => {
+  const result: Config = {};
   Object.entries(obj).forEach(([key, value]) => {
-    if (typeof value === "object") {
-      if (value) {
-        flatten(value, prefix + key + "/", aggregate);
-      }
-    } else {
-      aggregate[prefix + key] = value;
+    if (!key.startsWith(namespace)) {
+      return;
     }
+    const trimmedKey = key.substr(namespace.length);
+    if (trimmedKey.length === 0) {
+      return;
+    }
+    // TODO: Should we throw an error here if the value isn't a string?
+    result[trimmedKey] = String(value);
   });
-  return aggregate;
+  return result;
 };

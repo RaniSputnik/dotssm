@@ -1,14 +1,6 @@
 {
-  "some": {
-    "namespace": {
-      "greeting": "Hello, local SSM"
-    }
-  },
-  "foo": {
-    "bar": "baz",
-    "secret": "localsecret",
-    "nested": {
-      "value": "this config is nested"
-    }
-  }
+  "/some/namespace/greeting": "Hello, local SSM",
+  "/foo/bar": "baz",
+  "/foo/secret": "localsecret",
+  "/foo/nested/value": "this config is nested"
 }
