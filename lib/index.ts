@@ -3,6 +3,9 @@ import { fallback } from "./fallback";
 import { local } from "./local";
 import { ssm } from "./ssm";
 
+// Re-export types so that they can be used in consuming packages
+export { GetConfigFunc, Config, NO_CONFIG } from "./types";
+
 /**
  * Used to retrieve config from either a local file or parameter store.
  * Returns an empty config if there are no values found in the given namespace.
