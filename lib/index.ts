@@ -5,7 +5,7 @@ import { ssm } from "./ssm";
 
 /**
  * Used to retrieve config from either a local file or parameter store.
- * Returns `undefined` if there are no values found in the given namespace.
+ * Returns an empty config if there are no values found in the given namespace.
  * Searches for the local file at `.ssm.json` in the current working directory.
  *
  * @param namespace The SSM namespace to search for the application config

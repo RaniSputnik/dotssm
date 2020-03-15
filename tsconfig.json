@@ -8,5 +8,5 @@
     "target": "es5"
   },
   "include": ["lib"],
-  "exclude": ["node_modules", "acceptance", "*.spec.ts"]
+  "exclude": ["node_modules"]
 }

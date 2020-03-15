@@ -25,7 +25,7 @@ Use the following code in your app to retrieve the config:
 ```js
 const namespace = "/mydomain/myapp";
 const config = await getConfig(namespace);
-setAppName(config.name) // Do whatever you need to do with config.name here
+setAppName(config["/name"]);
 ```
 
 TODO: Example of what IAM permissions the function needs in order to run.
@@ -83,10 +83,3 @@ terraform init acceptance/infra
 terraform apply acceptance/infra
 npm run test:acceptance
 ```
-
-## FAQ
-
-### Why do I need to add a leading / trailing slash on my namespace?
-
-TODO: chat about the implications for IAM Permissions
-TODO: should we reconsider this? Perhaps you could just supply the namespace as foo.bar or something like that?

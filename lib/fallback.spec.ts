@@ -1,7 +1,7 @@
 import { Config } from "./types";
 import { fallback } from "./fallback";
 
-const anyNamespace = "some/namespace";
+const anyNamespace = "/some/namespace";
 
 describe("Given there is a config func and fallback", () => {
   describe("When the first config func returns a valid config", () => {
