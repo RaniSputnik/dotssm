@@ -9,8 +9,7 @@ const multipleFixturesDir = path.join(fixturesDir, "multiple-keys");
 const nestedFixturesDir = path.join(fixturesDir, "nested");
 
 const validNamespace = "/foo/bar";
-const unknownNamespace = "/invalid/namespace/";
-const invalidNamespace = "/foo/bar/";
+const unknownNamespace = "/unknown/namespace/";
 const anyNamespace = "/some/namespace";
 
 describe("Given there is a .ssm file in the current working directory", () => {
@@ -35,6 +34,7 @@ describe("Given there is a .ssm file in the current working directory", () => {
   describe("When getConfig is called with an invalid namespace", () => {
     it("Then it returns an empty object", async () => {
       process.chdir(nestedFixturesDir);
+      const invalidNamespace = validNamespace + "/";
       const result = await getConfig(invalidNamespace);
       expect(result).toEqual({});
     });
