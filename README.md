@@ -54,7 +54,7 @@ The client making the above request requires the following IAM policy:
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": ["ssm:ssm:GetParametersByPath"],
+      "Action": ["ssm:GetParametersByPath"],
       "Resource": "arn:aws:ssm:region:account-id:parameter/mydomain/myapp/*"
     }
   ]
