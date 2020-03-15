@@ -17,6 +17,15 @@ describe("Given there are two SSM parameters prefixed with /foo", () => {
           "/nested/value": "this config is nested"
         });
       });
+
+      describe("And I include the trailing slash", () => {
+        it("Then returns the config without the leading slash", async () => {
+          const result = await getConfig("/some/namespace/");
+          expect(result).toEqual({
+            greeting: "Hello, world"
+          });
+        });
+      });
     });
   });
 

@@ -5,7 +5,7 @@ export const ssm = (
   client: AWS.SSM = new AWS.SSM()
 ): GetConfigFunc => async namespace => {
   const params: AWS.SSM.GetParametersByPathRequest = {
-    Path: namespace + "/",
+    Path: namespace,
     Recursive: true,
     WithDecryption: true
     // TODO: Handle pagination
