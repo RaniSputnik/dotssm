@@ -1,5 +1,7 @@
 # Dotssm
 
+![Tests](https://github.com/RaniSputnik/dotssm/workflows/Tests/badge.svg)
+
 [Dotenv](https://www.npmjs.com/package/dotenv) for [SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html).
 Load configuration from a file when running locally,
 seamlessly integrate with SSM when running in an AWS environment.
