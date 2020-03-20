@@ -43,3 +43,24 @@ describe("Given there are two SSM parameters prefixed with /foo", () => {
     });
   });
 });
+
+describe("Given there are too many SSM parameters to fetch in a single request", () => {
+  describe("When I call getConfig", () => {
+    it("Then I successfully retrieve all of the values from SSM", async () => {
+      const result = await getConfig("/pagination");
+      expect(result).toEqual({
+        "/foo": "bar",
+        "/baz": "barry",
+        "/hello": "world",
+        "/cake": "is a lie",
+        "/something": "someone",
+        "/someway": "somehow",
+        "/tip": "top",
+        "/gate": "way",
+        "/rani": "sputnik",
+        "/project": "dotssm",
+        "/page": "2"
+      });
+    });
+  });
+});
