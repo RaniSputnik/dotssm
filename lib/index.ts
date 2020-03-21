@@ -5,7 +5,7 @@ import { ssm } from "./ssm";
 import { cache } from "./cache";
 
 // Re-export types so that they can be used in consuming packages
-export { GetConfigFunc, Config, NO_CONFIG } from "./types";
+export { GetConfigFunc, GetTypedConfigFunc, Config, NO_CONFIG } from "./types";
 
 /**
  * Used to retrieve config from either a local file or parameter store.
