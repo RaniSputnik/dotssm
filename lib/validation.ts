@@ -1,4 +1,4 @@
-import { GetConfigFunc, GetTypedConfigFunc, Config } from "./types";
+import { GetConfigFunc, Config } from "./types";
 
 interface ValidationError {
   name: string;
@@ -48,7 +48,7 @@ class SimpleValidator implements Validator {
 export const validation = <T>(
   validator: ValidatorFunc<T>,
   getConfig: GetConfigFunc
-): GetTypedConfigFunc<T> => {
+): GetConfigFunc<T> => {
   return async (namespace: string): Promise<T> => {
     const config = await getConfig(namespace);
     const v = new SimpleValidator(config);

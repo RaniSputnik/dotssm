@@ -1,4 +1,4 @@
-import { GetConfigFunc, GetTypedConfigFunc } from "./types";
+import { GetConfigFunc, Config } from "./types";
 import { fallback } from "./fallback";
 import { local } from "./local";
 import { ssm } from "./ssm";
@@ -6,7 +6,7 @@ import { cache } from "./cache";
 import { ValidatorFunc, validation } from "./validation";
 
 // Re-export types so that they can be used in consuming packages
-export { GetConfigFunc, GetTypedConfigFunc, Config, NO_CONFIG } from "./types";
+export { GetConfigFunc, Config, NO_CONFIG } from "./types";
 export { ValidatorFunc, Validator } from "./validation";
 
 /**
@@ -26,8 +26,9 @@ export const getConfig: GetConfigFunc = fallback(local(), ssm());
  * @param client The client to use to retrieve values from SSM.
  * @return a function that can be called with a namespace value to retrieve config.
  */
-export const withAWSClient = (client: AWS.SSM): GetConfigFunc =>
-  fallback(local(), ssm(client));
+export function withAWSClient(client: AWS.SSM): GetConfigFunc {
+  return fallback(local(), ssm(client));
+}
 
 /**
  * Wraps a config getter function with an in-memory cache that prevents refetching
@@ -37,7 +38,13 @@ export const withAWSClient = (client: AWS.SSM): GetConfigFunc =>
  * @param fn The config getter function to wrap with the cache, uses the `getConfig` function by default
  * @return a function that can be called with a namespace value to retrieve config.
  */
-export const withCache = (fn = getConfig): GetConfigFunc => cache(fn);
+export function withCache(): GetConfigFunc;
+export function withCache<T>(fn: GetConfigFunc<T>): GetConfigFunc<T>;
+export function withCache<T>(
+  fn: GetConfigFunc<T | Config> = getConfig
+): GetConfigFunc<T> {
+  return cache(fn as GetConfigFunc<T>);
+}
 
 /**
  * Gets config and validates the result to ensure it conforms to a given spec.
@@ -46,7 +53,9 @@ export const withCache = (fn = getConfig): GetConfigFunc => cache(fn);
  * @param v The validation function that will be used to detect an invalid config.
  * @param configFunc The function that will be called to fetch the config.
  */
-export const withValidation = <T>(
+export function withValidation<T>(
   v: ValidatorFunc<T>,
   configFunc: GetConfigFunc = getConfig
-): GetTypedConfigFunc<T> => validation(v, configFunc);
+): GetConfigFunc<T> {
+  return validation(v, configFunc);
+}

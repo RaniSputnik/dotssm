@@ -1,9 +1,9 @@
-import { GetConfigFunc, Config } from "./types";
+import { GetConfigFunc } from "./types";
 
-export const cache = (getConfig: GetConfigFunc): GetConfigFunc => {
-  let promise: Promise<Config>;
+export const cache = <T>(getConfig: GetConfigFunc<T>): GetConfigFunc<T> => {
+  let promise: Promise<T>;
 
-  return (namespace: string): Promise<Config> => {
+  return (namespace: string): Promise<T> => {
     if (promise) {
       return promise;
     }
