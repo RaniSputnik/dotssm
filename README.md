@@ -44,6 +44,20 @@ const config = await getConfig("/mydomain/myapp/");
 // TODO: Do something with config
 ```
 
+Or perhaps you're using Lambda and want to only fetch config once per invocation:
+
+```js
+import { withCache } from "dotssm";
+
+export const myHandler = async (event, context) => {
+  const getConfig = withCache();
+  await serviceA(getConfig);
+  await serviceB(getConfig);
+  // The first call to getConfig will fetch from SSM
+  // Everything thereafter will use the cached result
+};
+```
+
 The client making the above request requires the following IAM policy:
 
 ```json

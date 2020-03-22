@@ -2,6 +2,7 @@ import { GetConfigFunc } from "./types";
 import { fallback } from "./fallback";
 import { local } from "./local";
 import { ssm } from "./ssm";
+import { cache } from "./cache";
 
 // Re-export types so that they can be used in consuming packages
 export { GetConfigFunc, Config, NO_CONFIG } from "./types";
@@ -25,6 +26,16 @@ export const getConfig: GetConfigFunc = fallback(local(), ssm());
  */
 export const withAWSClient = (client: AWS.SSM): GetConfigFunc =>
   fallback(local(), ssm(client));
+
+/**
+ * Wraps a config getter function with an in-memory cache that prevents refetching
+ * values for the lifetime of the config getter. Said another way, ensures that the given
+ * config getter function is only ever called once.
+ *
+ * @param fn The config getter function to wrap with the cache, uses the `getConfig` function by default
+ * @return a function that can be called with a namespace value to retrieve config.
+ */
+export const withCache = (fn = getConfig): GetConfigFunc => cache(fn);
 
 // TODO: We'll probably want schema validation at some point
 // but do we want to bundle it in this library? Or somewhere else?
