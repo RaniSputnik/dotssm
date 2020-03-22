@@ -31,33 +31,6 @@ const appName = config.name;
 Exclude the `.ssm.json` file from your deployment pacakge and the config
 will seamlessly be loaded from AWS Systems Manager instead.
 
-Need to customise the AWS client?
-
-```js
-import { withAWSClient } from "dotssm";
-import AWS from "aws-sdk";
-
-const client = AWS.SSM({ apiVersion: "2014-11-06" });
-const getConfig = withAWSClient(client);
-const config = await getConfig("/mydomain/myapp/");
-
-// TODO: Do something with config
-```
-
-Or perhaps you're using Lambda and want to only fetch config once per invocation:
-
-```js
-import { withCache } from "dotssm";
-
-export const myHandler = async (event, context) => {
-  const getConfig = withCache();
-  await serviceA(getConfig);
-  await serviceB(getConfig);
-  // The first call to getConfig will fetch from SSM
-  // Everything thereafter will use the cached result
-};
-```
-
 The client making the above request requires the following IAM policy:
 
 ```json
@@ -75,6 +48,122 @@ The client making the above request requires the following IAM policy:
 
 And that's all there is to it.
 You can now develop locally offline and seamlessly integrate with SSM once deployed.
+
+## Advanced Usage
+
+### Custom AWS Client
+
+If you would like to use a customised AWS client to retrieve values from SSM, you can use the `withAWSClient` method.
+Returns a `getConfig` function that will use the AWS client provided when fetching from a live environment.
+
+```js
+import { withAWSClient } from "dotssm";
+import AWS from "aws-sdk";
+
+const client = AWS.SSM({ apiVersion: "2014-11-06" });
+const getConfig = withAWSClient(client);
+const config = await getConfig("/mydomain/myapp/");
+
+// TODO: Do something with config
+```
+
+### Caching
+
+It is possible to use an in-memory cache to avoid multiple expensive fetches from SSM.
+This is particularly useful in a Lambda environment where you may want to ensure you only fetch config once per invocation.
+
+```js
+import { withCache } from "dotssm";
+import { serviceA, serviceB } from "./my/domain";
+
+export async function myLambdaHandler(event, context) {
+  const getConfig = withCache();
+  await serviceA(getConfig);
+  await serviceB(getConfig);
+  // The first call to getConfig will fetch from SSM
+  // Everything thereafter will use the cached result
+}
+```
+
+### Validation
+
+The above config fetching functions return a record which allows you to retrieve values by name.
+In many circumstances it is useful to validate the config once retrieved so that you can be sure
+the required parameters are present.
+This has the additional benefit of providing stronger typing when using Typescript.
+
+An advanced validation case might look like the following:
+
+```js
+import { withValidation } from "dotssm";
+
+const validateMyConfig = v => {
+  const config = {
+    api: {
+      url: v.required("/api/url", urlFormat),
+      token: v.required("/api/token", minLength(5))
+    },
+    maxUsers: parseInt(v.optional("/maxUsers")) || 0
+  };
+  if (config.api.url.contains("localhost")) {
+    v.error("/api/url", "Can not use local API for some good reason");
+  }
+  return config;
+};
+
+const getConfig = withValidation(validateMyConfig);
+const config = await getConfig("/mydomain/myapp");
+console.log(config.api); // Logs { url: "http://example.com", "token": "abc123" }
+```
+
+The magic is all in the validator function (`validateMyConfig`), which is passed a validator (`v`) with three methods:
+
+- `v.required(param, ...constraints)` - indicates that a given parameter is required.
+- `v.optional(param, ...constraints)` - indicates that a given parameter is optional.
+- `v.error(param, message)` - allows the reporting of domain specific errors.
+
+The validation function is run when `getConfig` is called and any validation errors result in a
+thrown error with an aggregated list of validation failures.
+
+You can also combine validation with caching and custom AWS clients as follows:
+
+```js
+import { withAWSClient, withValidation, withCache } from "dotssm";
+
+const getConfig = withCache(
+  withValidation(validateMyConfig, withAWSClient(myClient))
+);
+```
+
+_Note: The order is important here. If we were to put `withCache` inside the `withValidation` function,
+validation would be re-run despite the fact that no new config was being retrieved._
+
+## Full API Reference
+
+```typescript
+// Get configuration either from a local .ssm.json file or from SSM
+function getConfig(namespace: string): Promise<Config>;
+// Add a custom AWS client for fetching from SSM
+function withAWSClient(client: AWS.SSM): GetConfigFunc<Config>;
+// Add cache support to ensure config is only retrieved once from SSM
+function withCache(): GetConfigFunc<Config>;
+function withCache<T>(getConfig: GetConfigFunc<T>): GetConfigFunc<T>;
+// Add validation support to ensure your config matches your expectations
+function withValidation<T>((v: Validator): T): GetConfigFunc<T>;
+function withValidation<T>((v: Validator): T, getConfig: GetConfigFunc): GetConfigFunc<T>;
+
+// A validator is passed to validation functions to allow them to report errors
+class Validator {
+  required(param: string, ...constraint: Constraint[]): string
+  optional(param: string, ...constraint: Constraint[]): string | undefined
+  error(param: string, message: string): void
+}
+
+interface ValidationError { name: string, error: string };
+type Constraint = (value: string): ValidationError | undefined;
+type Config = Record<string, string | undefined>
+type GetConfigFunc<T> = (namespace: string): Promise<T>
+```
 
 ## Motivation
 

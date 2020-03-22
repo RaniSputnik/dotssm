@@ -5,13 +5,13 @@ interface ValidationError {
   error: string;
 }
 
-type RuleFunc = (field: string) => ValidationError | undefined;
+type Constraint = (field: string) => ValidationError | undefined;
 
 // TODO: Is there a better name we can give to this interface?
 // There are so many "validators" in this file
 export interface Validator {
-  required: (value: string, ...rules: RuleFunc[]) => string;
-  optional: (value: string, ...rules: RuleFunc[]) => string | undefined;
+  required: (value: string, ...constraints: Constraint[]) => string;
+  optional: (value: string, ...constraints: Constraint[]) => string | undefined;
   error: (value: string, message: string) => void;
 }
 
@@ -23,7 +23,7 @@ class SimpleValidator implements Validator {
   private readonly _errors: ValidationError[] = [];
   constructor(private readonly config: Config) {}
 
-  required(value: string, ...rules: RuleFunc[]): string {
+  required(value: string, ...constraints: Constraint[]): string {
     const result = this.config[value];
     if (result) {
       return result;
@@ -32,7 +32,7 @@ class SimpleValidator implements Validator {
     return "<missing>";
   }
 
-  optional(value: string, ...rules: RuleFunc[]): string | undefined {
+  optional(value: string, ...constraints: Constraint[]): string | undefined {
     return this.config[value];
   }
 
