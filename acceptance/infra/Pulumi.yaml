@@ -1,0 +1,3 @@
+name: dotssm
+runtime: nodejs
+description: Dotenv for SSM

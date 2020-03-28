@@ -29,6 +29,9 @@
   "author": "Ryan Loader <talk@ryanloader.me>",
   "license": "MIT",
   "devDependencies": {
+    "@pulumi/aws": "^1.28.0",
+    "@pulumi/awsx": "^0.19.2",
+    "@pulumi/pulumi": "^1.13.1",
     "@types/jest": "^25.1.2",
     "@types/node": "^13.7.1",
     "jest": "^25.1.0",
