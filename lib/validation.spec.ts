@@ -3,11 +3,15 @@ import { GetConfigFunc } from "./types";
 
 describe("Given a non-empty config", () => {
   interface MyConfig {
-    foo: string;
+    foo?: string;
   }
 
-  const validateMyConfig = (v: Validator): MyConfig => ({
+  const validateRequired = (v: Validator): MyConfig => ({
     foo: v.required("/foo")
+  });
+
+  const validateOptional = (v: Validator): MyConfig => ({
+    foo: v.optional("/foo")
   });
 
   const getValidConfig: GetConfigFunc = async () => ({ "/foo": "bar" });
@@ -23,7 +27,7 @@ describe("Given a non-empty config", () => {
     });
 
     it("Then a strongly typed config is returned", async () => {
-      const getConfig = validation(validateMyConfig, getValidConfig);
+      const getConfig = validation(validateRequired, getValidConfig);
 
       const result = await getConfig("/any/namespace");
       expect(result).toEqual({ foo: "bar" });
@@ -32,10 +36,19 @@ describe("Given a non-empty config", () => {
 
   describe("When a required value is not present", () => {
     it("Then an error is raised", async () => {
-      const getConfig = validation(validateMyConfig, getEmptyConfig);
+      const getConfig = validation(validateRequired, getEmptyConfig);
 
       const promise = getConfig("/any/namespace");
       await expect(promise).rejects.toEqual(expect.any(Error));
+    });
+  });
+
+  describe("When a optitonal value is not present", () => {
+    it("Then the ", async () => {
+      const getConfig = validation(validateOptional, getEmptyConfig);
+
+      const result = await getConfig("/any/namespace");
+      expect(result).toEqual({});
     });
   });
 });
