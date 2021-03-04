@@ -1,16 +1,17 @@
-import AWS from "aws-sdk";
+import { AWSError } from "aws-sdk"
+import SSM from "aws-sdk/clients/ssm";
 import { GetConfigFunc, Config } from "./types";
 
 const PAGE_SIZE = 10; // Currently the maximum page size for loading from SSM
 const MAX_PAGES = 100; // For a maximum limit of 1000 params loaded, should be plenty
 const MAX_PARAMETERS = PAGE_SIZE * MAX_PAGES;
 
-export type GetByPathParams = AWS.SSM.GetParametersByPathRequest;
-export type GetByPathResult = AWS.SSM.GetParametersByPathResult;
-export type GetByPathErr = AWS.AWSError;
+export type GetByPathParams = SSM.GetParametersByPathRequest;
+export type GetByPathResult = SSM.GetParametersByPathResult;
+export type GetByPathErr = AWSError | undefined;
 export type GetByPathCallback = (
-  err?: GetByPathErr,
-  data?: GetByPathResult
+  err: GetByPathErr,
+  data: GetByPathResult
 ) => void;
 export interface SSMClient {
   getParametersByPath(
@@ -20,13 +21,13 @@ export interface SSMClient {
 }
 
 export const ssm = (
-  client: SSMClient = new AWS.SSM()
+  client: SSMClient = new SSM()
 ): GetConfigFunc => async namespace => {
   const result: Config = {};
 
   let nextToken = undefined;
   for (var i = 0; i < MAX_PAGES; i++) {
-    const params: AWS.SSM.GetParametersByPathRequest = {
+    const params: SSM.GetParametersByPathRequest = {
       Path: namespace,
       Recursive: true,
       WithDecryption: true,
@@ -63,7 +64,7 @@ const getParametersByPath = (
   return new Promise((resolve, reject) => {
     client.getParametersByPath(
       params,
-      (err?: GetByPathErr, data?: GetByPathResult) => {
+      (err: GetByPathErr, data: GetByPathResult) => {
         err ? reject(err) : resolve(data);
       }
     );
